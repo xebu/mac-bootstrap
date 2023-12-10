@@ -38,5 +38,7 @@ install_homebrew
 
 install_oh_my_zsh
 
+install_sdkman
+
 # Disable the sudo keep-alive loop
 kill %1

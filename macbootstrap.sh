@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Prompt for the user's password and store it securely
+echo "Please enter your password (for sudo access):"
+read -s password
+
+# Define a function to execute commands with sudo using the provided password
+sudo_with_password() {
+    local pass="$1"
+    shift
+    echo "$pass" | sudo -S -p '' "$@"
+}
+
 # List of additional Homebrew formulae
 formulae=(
     autoconf
@@ -45,42 +56,45 @@ casks=(
 
 # Install Homebrew (if not installed)
 if ! command -v brew &>/dev/null; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    echo "$password" | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 # Install Oh My Zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    sudo_with_password "$password" sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
 # Install SDKMAN
 if [ ! -d "$HOME/.sdkman" ]; then
-    curl -s "https://get.sdkman.io" | bash
+    sudo_with_password "$password" curl -s "https://get.sdkman.io" | bash
 fi
 
 # Install Python 3 and set it as default
-brew install python@3
+sudo_with_password "$password" brew install python@3
 echo 'export PATH="/usr/local/opt/python@3/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 
 # Install Wget and Git
-brew install wget git
+sudo_with_password "$password" brew install wget git
 
 # Install additional Homebrew formulae
 for formula in "${formulae[@]}"; do
-    brew install "$formula"
+    sudo_with_password "$password" brew install "$formula"
 done
 
 # Install Homebrew Casks
 for cask in "${casks[@]}"; do
-    brew install --cask "$cask"
+    sudo_with_password "$password" brew install --cask "$cask"
 done
 
 # Display installation status
 echo "Homebrew, Oh My Zsh, SDKMAN, Python 3 (default), Wget, Git, and additional formulae and Casks are installed."
 
 # Optionally, change the default shell to Zsh
-chsh -s /bin/zsh
+sudo_with_password "$password" chsh -s /bin/zsh
 
 # Clean up
-brew cleanup
+sudo_with_password "$password" brew cleanup
+
+# Securely clear the stored password
+unset password

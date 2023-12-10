@@ -1,0 +1,14 @@
+autoconf
+ffmpeg
+gettext
+git
+neovim
+nvm
+openssl@1.1
+openssl@3
+pyenv
+readline
+ruby
+tree
+tree-sitter
+wget

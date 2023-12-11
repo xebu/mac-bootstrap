@@ -27,7 +27,10 @@ casks=(
 
 # Install Homebrew (if not installed)
 if ! command -v brew &>/dev/null; then
+    echo "Home brew not installed, being installation"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+else
+    echo "Homebrew is installed ... continue"
 fi
 
 # Install each Homebrew Cask

@@ -25,21 +25,41 @@ casks=(
     whatsapp
 )
 
-# Install Homebrew (if not installed)
-if ! command -v brew &>/dev/null; then
-    echo "Home brew not installed, being installation"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-else
-    echo "Homebrew is installed ... continue"
-fi
+# Extend sudo timeout for the duration of the script
+sudo -v
 
-# Install each Homebrew Cask
-for cask in "${casks[@]}"; do
-    brew install --cask "$cask"
-done
+# Keep-alive: update existing sudo timestamp until script is done
+while true; do
+    sudo -n true
+    sleep 60
+    kill -0 "$$" || exit
+done &
 
-# Display installation status
-echo "Homebrew Casks are installed."
+# Function to install or upgrade packages using Homebrew or Homebrew Cask
+install_or_upgrade() {
+    local package_type=$1
+    shift
 
-# Clean up
-brew cleanup
+    for package in "$@"; do
+        if [ "$package_type" == "cask" ]; then
+            if brew list --cask "$package" &>/dev/null; then
+                brew upgrade --cask "$package"
+            else
+                brew install --cask "$package"
+            fi
+        else
+            if brew list "$package" &>/dev/null; then
+                brew upgrade "$package"
+            else
+                brew install "$package"
+            fi
+        fi
+    done
+}
+
+# Install or upgrade the specified casks
+install_or_upgrade "cask" "${casks[@]}"
+
+echo "Installations are complete, please reopen your shell"
+
+kill %1

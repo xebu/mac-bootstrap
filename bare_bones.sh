@@ -25,9 +25,25 @@ install_nvm() {
   if [ ! -d "$HOME/.nvm" ]; then
     echo "Installing NVM..."
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
+    # export NVM_DIR="$HOME/.nvm"
+    
+    # Define the lines to add to the ~/.zshrc file
+    add_to_profile='
+    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    '
+
+    # Append the lines to ~/.zshrc
+    echo "$add_to_profile" >> ~/.zshrc
+
+# Source ~/.zshrc to apply the changes immediately
+source ~/.zshrc
+
+echo "NVM configuration added to ~/.zshrc."
+
     nvm install --lts
+
+
     echo "nvm and node --lts installation complete"
   fi
 }
@@ -47,14 +63,12 @@ install_homebrew() {
   # Check if Homebrew is installed, and if not, install it
   if ! command -v brew &>/dev/null; then
   echo "Homebrew is not installed. Installing Homebrew..."
+
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  echo "adding to user's profile"
-
-  (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.bash_profile  # For Bash
-  (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zshrc  # For Zsh
+  
+  (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> "$HOME/.zprofile"
   eval "$(/opt/homebrew/bin/brew shellenv)"
-
-  echo "Homebrew install is complete"
+  echo "Homebrew setup added to $HOME/.zprofile"
 fi
 }
 

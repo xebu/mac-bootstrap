@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# List of additional Homebrew formulae
+formulae=(
+    autoconf
+    ffmpeg
+    gettext
+    git
+    neovim
+    nvm
+    openssl@1.1
+    openssl@3
+    pyenv
+    readline
+    ruby
+    tree
+    tree-sitter
+    wget
+)
+
 # List of Homebrew Casks to install
 casks=(
     alfred
@@ -29,6 +47,11 @@ casks=(
 if ! command -v brew &>/dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
+
+# install each Homebrew Formulae
+for formula in "${formulae[@]}"; do
+    brew install "$formula"
+done
 
 # Install each Homebrew Cask
 for cask in "${casks[@]}"; do

@@ -70,6 +70,7 @@ install_homebrew() {
     ) >>"$HOME/.zprofile"
     eval "$(/opt/homebrew/bin/brew shellenv)"
     echo "Homebrew setup added to $HOME/.zprofile"
+    brew tap homebrew/cask-versions
   else
     echo "Homebrew already installed"
   fi

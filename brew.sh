@@ -74,27 +74,6 @@ install_or_upgrade() {
   done
 }
 
-install_homebrew() {
-  # Check if Homebrew is installed, and if not, install it
-  if ! command -v brew &>/dev/null; then
-    echo "Homebrew is not installed. Installing Homebrew..."
-
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    (
-      echo
-      echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'
-    ) >>"$HOME/.zprofile"
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    echo "Homebrew setup added to $HOME/.zprofile"
-    brew tap homebrew/cask-versions
-  else
-    echo "Homebrew already installed"
-  fi
-}
-
-install_homebrew
-
 # Install or upgrade the specified formulae
 install_or_upgrade "formula" "${formulae[@]}"
 

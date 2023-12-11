@@ -28,6 +28,7 @@ install_nvm() {
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     nvm install --lts
+    echo "nvm and node --lts installation complete"
   fi
 }
 
@@ -47,6 +48,13 @@ install_homebrew() {
   if ! command -v brew &>/dev/null; then
   echo "Homebrew is not installed. Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo "adding to user's profile"
+
+  (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.bash_profile  # For Bash
+  (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zshrc  # For Zsh
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+
+  echo "Homebrew install is complete"
 fi
 }
 
@@ -57,6 +65,8 @@ install_oh_my_zsh
 install_nvm
 
 install_sdkman
+
+echo "Installations are complete, please reopen your shell"
 
 # Disable the sudo keep-alive loop
 kill %1

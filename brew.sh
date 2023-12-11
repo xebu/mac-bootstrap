@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Extend sudo timeout for the duration of the script
+sudo -v
+
+# Keep-alive: update existing sudo timestamp until script is done
+while true; do
+  sudo -n true
+  sleep 60
+  kill -0 "$$" || exit
+done &
+
 # List of additional Homebrew formulae
 formulae=(
   autoconf
@@ -91,3 +101,5 @@ install_or_upgrade "formula" "${formulae[@]}"
 install_or_upgrade "cask" "${casks[@]}"
 
 echo "Installations are complete, please reopen your shell"
+
+kill %1

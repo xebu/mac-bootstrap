@@ -19,11 +19,27 @@ install_oh_my_zsh() {
   fi
 }
 
+
+# Function to install NVM
+install_nvm() {
+  if [ ! -d "$HOME/.nvm" ]; then
+    echo "Installing NVM..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm install --lts
+  fi
+}
+
 install_sdkman() {
     # Install SDKMAN
+    echo "Installing sdkman..."
     if [ ! -d "$HOME/.sdkman" ]; then
         curl -s "https://get.sdkman.io" | bash
+
+        source "$HOME/.sdkman/bin/sdkman-init.sh"
     fi
+    sdk version
 }
 
 install_homebrew() {
@@ -37,6 +53,8 @@ fi
 install_homebrew
 
 install_oh_my_zsh
+
+install_nvm
 
 install_sdkman
 

@@ -82,16 +82,6 @@ install_homebrew() {
   fi
 }
 
-# Extend sudo timeout for the duration of the script
-sudo -v
-
-# Keep-alive: update existing sudo timestamp until script is done
-while true; do
-  sudo -n true
-  sleep 60
-  kill -0 "$$" || exit
-done &
-
 install_homebrew
 
 # Install or upgrade the specified formulae
@@ -100,5 +90,4 @@ install_or_upgrade "formula" "${formulae[@]}"
 # Install or upgrade the specified casks
 install_or_upgrade "cask" "${casks[@]}"
 
-# Disable the sudo keep-alive loop
-kill %1
+echo "Installations are complete, please reopen your shell"
